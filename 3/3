@@ -1,0 +1,130 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+
+        // === 範例 1: 基本輸出 ===
+        System.out.println("=== Java 範例程式 ===\n");
+
+        int age = 25;
+        double salary = 50000.50;
+        String name = "小王";
+
+        System.out.println("姓名: " + name);
+        System.out.println("年齡: " + age);
+        System.out.println("薪水: " + salary + "\n");
+
+        // === 範例 2: 迴圈 ===
+        System.out.println("--- 迴圈範例 ---");
+        for (int i = 1; i <= 5; i++) {
+            System.out.printf("第 %d 次迴圈\n", i);
+        }
+        System.out.println();
+
+        // === 範例 3: 陣列 ===
+        System.out.println("--- 陣列範例 ---");
+        int[] scores = {85, 92, 78, 95, 88};
+        int total = 0;
+
+        for (int i = 0; i < scores.length; i++) {
+            total += scores[i];
+        }
+
+        double avg = (double) total / scores.length;
+        System.out.println("總分: " + total);
+        System.out.println("平均分: " + avg + "\n");
+
+        // === 範例 4: 條件判斷 ===
+        System.out.println("--- 條件判斷範例 ---");
+        if (avg >= 90) {
+            System.out.println("等級: 優秀");
+        } else if (avg >= 80) {
+            System.out.println("等級: 良好");
+        } else if (avg >= 70) {
+            System.out.println("等級: 及格");
+        } else {
+            System.out.println("等級: 不及格");
+        }
+        System.out.println();
+
+        // === 範例 5: 方法 ===
+        System.out.println("--- 方法範例 ---");
+        System.out.println("10 + 20 = " + add(10, 20));
+
+        // === 範例 6: 牛頓法求根 ===
+        System.out.println("--- 二次方程式根求解 (牛頓法) ---");
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("請輸入二次方程式係數 a b c (以空格分隔): ");
+        double a = sc.nextDouble();
+        double b = sc.nextDouble();
+        double c = sc.nextDouble();
+
+        System.out.print("請輸入初始猜測值: ");
+        double guess = sc.nextDouble();
+
+        Quadratic eq = new Quadratic(a, b, c);
+        double root = eq.newton(guess, 50, 1e-7);
+
+        if (Double.isNaN(root)) {
+            System.out.println("無法找到根，可能導數為0或牛頓法失敗。");
+        } else {
+            System.out.println("找到近似根: " + root);
+            System.out.println("代入方程式值 f(root) = " + eq.f(root));
+        }
+
+        sc.close();
+    }
+
+    // 加法
+    public static int add(int x, int y) {
+        return x + y;
+    }
+}
+
+// 二次方程式類別
+class Quadratic {
+    private double a, b, c;
+
+    public Quadratic(double a, double b, double c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+
+    // f(x)
+    public double f(double x) {
+        return a * x * x + b * x + c;
+    }
+
+    // f'(x)
+    public double df(double x) {
+        return 2 * a * x + b;
+    }
+
+    // 牛頓法
+    public double newton(double start, int maxIter, double tol) {
+        double x = start;
+
+        for (int i = 1; i <= maxIter; i++) {
+            double fx = f(x);
+            double dfx = df(x);
+
+            System.out.printf("迭代 %d: x=%.6f, f(x)=%.6f, f'(x)=%.6f\n", i, x, fx, dfx);
+
+            if (Math.abs(dfx) < 1e-12) {
+                return Double.NaN;
+            }
+
+            double next = x - fx / dfx;
+
+            if (Math.abs(next - x) < tol) {
+                return next;
+            }
+
+            x = next;
+        }
+
+        return x;
+    }
+}
